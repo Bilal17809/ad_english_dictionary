@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+
+import '../theme/app_styles.dart';
 
 class BackIconButton extends StatelessWidget {
   const BackIconButton({super.key});
@@ -10,9 +11,13 @@ class BackIconButton extends StatelessWidget {
       onTap: () {
         Navigator.pop(context);
       },
-      child: Image.asset(
-        'images/back_icon.png',
-      ),
+      child:Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+            decoration: rounderGreyBorderDecoration,
+            padding: const EdgeInsets.all(5),
+            child: Icon(Icons.arrow_back_ios)),
+      )
     );
   }
 }
@@ -28,9 +33,7 @@ class NotificationIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child:Image.asset(
-        'images/notifications.png',
-      ),
+      child:Icon(Icons.notifications_rounded)
     );
   }
 }
@@ -76,25 +79,33 @@ class compaignIconButton extends StatelessWidget {
       onTap: () {
         Navigator.pop(context);
       },
-      child: SvgPicture.asset(
+      child: Image.asset(
         'images/Compaigns.svg',
       ),
     );
   }
 }
-class MenuIcon extends StatelessWidget {
-  const MenuIcon({super.key});
+
+
+class CardIcon extends StatelessWidget {
+  final String icon;
+  const CardIcon({
+    super.key,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: SvgPicture.asset(
-        'images/menu_icon.svg',
-        height: 20,
-        width: 20,
+    return Container(
+      decoration: roundedDecoration,
+      padding: const EdgeInsets.all(8),
+      child: Center(
+        child: Image.asset(
+          icon,
+          height: 40,
+          width: 40,
+          fit: BoxFit.contain,
+        ),
       ),
     );
   }

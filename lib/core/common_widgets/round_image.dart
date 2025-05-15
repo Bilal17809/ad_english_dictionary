@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
-import '../core/theme/app_colors.dart';
-
+import '../theme/app_colors.dart';
 class RoundedImage extends StatelessWidget {
   final String assetPath;
   final double size;
@@ -34,7 +31,7 @@ class RoundedImage extends StatelessWidget {
               ),
             ),
             child: ClipOval(
-              child: SvgPicture.asset(
+              child: Image.asset(
                 assetPath,
                 fit: BoxFit.cover,
               ),
