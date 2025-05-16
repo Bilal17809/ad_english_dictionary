@@ -1,54 +1,108 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-class RoundedImage extends StatelessWidget {
-  final String assetPath;
-  final double size;
-  final bool showIcon;
 
-  const RoundedImage({
+class RoundedButton extends StatelessWidget {
+  final Widget child;
+  final Color? backgroundColor;
+  final VoidCallback? onTap;
+
+  const RoundedButton({
     super.key,
-    required this.size,
-    required this.assetPath,
-    this.showIcon = false,
+    required this.child,
+    this.backgroundColor,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: skyColor,
-                width: 4,
-              ),
-            ),
-            child: ClipOval(
-              child: Image.asset(
-                assetPath,
-                fit: BoxFit.cover,
-              ),
-            ),
+    final button = Container(
+      width: 35,
+      height: 35,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        shape: BoxShape.circle,
+      ),
+      alignment: Alignment.center,
+      child: child,
+    );
+    return onTap != null
+        ? GestureDetector(onTap: onTap, child: button)
+        : button;
+  }
+}
+
+
+
+
+class AnimatedRoundedButton extends StatefulWidget {
+  final Widget child;
+  final Color? backgroundColor;
+  final VoidCallback? onTap;
+
+  const AnimatedRoundedButton({
+    super.key,
+    required this.child,
+    this.backgroundColor,
+    this.onTap,
+  });
+
+  @override
+  State<AnimatedRoundedButton> createState() => _AnimatedRoundedButtonState();
+}
+
+class _AnimatedRoundedButtonState extends State<AnimatedRoundedButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _scaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 2.0), weight: 50),
+      TweenSequenceItem(tween: Tween(begin: 2.0, end: 1.0), weight: 50),
+    ]).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOutCubic,
+    ));
+  }
+
+  Future<void> _handleTap() async {
+    if (widget.onTap != null) {
+      await _controller.forward(from: 0.0); // Play pop animation
+      widget.onTap!();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _handleTap,
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: Container(
+          width: 35,
+          height: 35,
+          decoration: BoxDecoration(
+            color: widget.backgroundColor ?? Colors.transparent,
+            shape: BoxShape.circle,
           ),
-          if (showIcon) ...[
-            Positioned(
-              bottom: 5,
-              right: 0,
-              child: Icon(
-                Icons.add_circle,
-                color: skyColor,
-              ),
-            ),
-          ]
-        ],
+          alignment: Alignment.center,
+          child: widget.child,
+        ),
       ),
     );
   }
 }
+
